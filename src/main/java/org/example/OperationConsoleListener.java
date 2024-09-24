@@ -69,6 +69,7 @@ public class OperationConsoleListener {
                     .orElseThrow(()-> new IllegalArgumentException("No such user with id=%s"
                             .formatted(userId)));
             var account = accountService.createAccount(user);
+            user.getAccountList().add(account);
             System.out.println("New account created with id: %s for user: %s"
                     .formatted(account.getId(), user.getLogin()));
 
