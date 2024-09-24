@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.account.AccountService;
+import org.example.user.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,8 +16,22 @@ public class ApplicationConfiguration {
 
     @Bean
     public OperationConsoleListener operationConsoleListener(
-            Scanner scanner
+            Scanner scanner,
+            UserService userService,
+            AccountService accountService
     ){
-        return new OperationConsoleListener(scanner);
+        return new OperationConsoleListener(scanner, userService, accountService);
+    }
+
+    @Bean
+    public UserService userService(
+            AccountService accountService
+    ){
+        return new UserService(accountService);
+    }
+
+    @Bean
+    public AccountService accountService(){
+        return new AccountService();
     }
 }
