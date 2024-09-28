@@ -3,8 +3,10 @@ package org.example;
 import org.example.operations.ConsoleOperationType;
 import org.example.operations.OperationCommandProcessor;
 
+import java.sql.SQLOutput;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class OperationConsoleListener {
     private final Scanner scanner;
@@ -18,9 +20,8 @@ public class OperationConsoleListener {
         this.processorMap = processorMap;
     }
 
-
     public void listenUpdates (){
-        System.out.println("Please type operations:\n");
+        printAllAvailableOperations();
         while(true){
                 var operationType = listenNextOperation();
                 processNextOperation(operationType);
@@ -29,8 +30,23 @@ public class OperationConsoleListener {
 
     }
 
+    public void start() {
+        System.out.println("Console Listener started");
+    }
+
+    public void endListen() {
+        System.out.println("Console Listener end listen");
+    }
+
+    private void printAllAvailableOperations() {
+        System.out.println("Available operations:");
+        processorMap.keySet().stream().forEach(System.out::println);
+    }
+
     private ConsoleOperationType listenNextOperation(){
-        System.out.println("Please type next operations:\n");
+        System.out.println("\nPlease type next operations:");
+        printAllAvailableOperations();
+        System.out.println();
         while(true){
             var nextOperation = scanner.nextLine();
             try{

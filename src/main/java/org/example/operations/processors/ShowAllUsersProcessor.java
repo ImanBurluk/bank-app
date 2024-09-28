@@ -1,5 +1,6 @@
 package org.example.operations.processors;
 
+import org.example.operations.ConsoleOperationType;
 import org.example.operations.OperationCommandProcessor;
 import org.example.user.User;
 import org.example.user.UserService;
@@ -21,5 +22,10 @@ public class ShowAllUsersProcessor implements OperationCommandProcessor {
         System.out.println("List of all users:");
         users.forEach(System.out::println);
 
+    }
+
+    @Override
+    public ConsoleOperationType getOperationType() {
+        return ConsoleOperationType.SHOW_ALL_USERS;
     }
 }

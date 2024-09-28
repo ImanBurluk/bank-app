@@ -10,8 +10,10 @@ import org.example.user.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 @Configuration
 public class ApplicationConfiguration {
@@ -23,15 +25,15 @@ public class ApplicationConfiguration {
     @Bean
     public OperationConsoleListener operationConsoleListener(
             Scanner scanner,
-            CreateUserProcessor createUserProcessor,
-            CreateAccountProcessor createAccountProcessor,
-            ShowAllUsersProcessor showAllUsersProcessor
+            List<OperationCommandProcessor> commandProcessorList
     ){
-        Map<ConsoleOperationType, OperationCommandProcessor> map = Map.of(
-                ConsoleOperationType.USER_CREATE, createUserProcessor,
-                ConsoleOperationType.ACCOUNT_CREATE, createAccountProcessor,
-                ConsoleOperationType.SHOW_ALL_USERS, showAllUsersProcessor
-        );
+        Map<ConsoleOperationType, OperationCommandProcessor> map =
+                commandProcessorList
+                        .stream()
+                        .collect(
+                                Collectors.toMap(OperationCommandProcessor::getOperationType, items -> items)
+                        )
+                ;
         return new OperationConsoleListener(scanner, map);
     }
 

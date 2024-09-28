@@ -1,5 +1,6 @@
 package org.example.operations.processors;
 
+import org.example.operations.ConsoleOperationType;
 import org.example.operations.OperationCommandProcessor;
 import org.example.user.User;
 import org.example.user.UserService;
@@ -25,5 +26,10 @@ public class CreateUserProcessor implements OperationCommandProcessor {
         User user = userService.createUser(login);
         System.out.println("User created: " + user.toString());
 
+    }
+
+    @Override
+    public ConsoleOperationType getOperationType() {
+        return ConsoleOperationType.USER_CREATE;
     }
 }
