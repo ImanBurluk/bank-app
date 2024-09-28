@@ -1,8 +1,10 @@
 package org.example.operations;
 
+import org.example.account.Account;
 import org.example.account.AccountService;
 import org.example.operations.processors.CreateAccountProcessor;
 import org.example.operations.processors.CreateUserProcessor;
+import org.example.operations.processors.DepositAccountProcessor;
 import org.example.operations.processors.ShowAllUsersProcessor;
 import org.example.user.UserService;
 import org.springframework.context.annotation.Bean;
@@ -35,6 +37,14 @@ public class OperationProcessorsConfiguration {
             UserService userService
     ) {
         return new ShowAllUsersProcessor(userService);
+    }
+
+    @Bean
+    public DepositAccountProcessor depositAccountProcessor(
+            Scanner scanner,
+            AccountService accountService
+    ){
+        return new DepositAccountProcessor(scanner,accountService);
     }
 
 
