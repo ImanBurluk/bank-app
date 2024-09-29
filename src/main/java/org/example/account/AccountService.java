@@ -61,4 +61,21 @@ public class AccountService {
             account.setMoneyAmount(account.getMoneyAmount() - amountToWithdraw);
 
     }
+
+    public Account closeAccount(int accountId) {
+        var accountToRemove = findAccountById(accountId)
+                .orElseThrow(() -> new IllegalArgumentException("No such account: id=%s".formatted(accountId)));
+        List<Account> accountList = getAllUserAccounts(accountToRemove.getUserId());
+        if (accountList.size() == 1){
+            throw new IllegalArgumentException("Cannot close the only one account");
+        }
+        Account accountToDeposit = accountList.stream()
+                .filter(it -> it.getId()!=accountId)
+                .findFirst()
+                .orElseThrow();
+        accountToDeposit.setMoneyAmount(accountToDeposit.getMoneyAmount() + accountToRemove.getMoneyAmount());
+
+        accountrMap.remove(accountId);
+        return accountToRemove;
+    }
 }
