@@ -10,14 +10,20 @@ public class AccountService {
 
     private int idCounter;
 
-    public AccountService() {
+    private final int defaultAccountAmount;
+    private final double transferCommission;
+
+    public AccountService(int defaultAccountAmount, double transferCommission) {
+        this.defaultAccountAmount = defaultAccountAmount;
+        this.transferCommission = transferCommission;
         this.accountrMap = new HashMap<>();
         this.idCounter = 0;
+
     }
 
     public Account createAccount(User user) {
         idCounter++;
-        Account account = new Account(idCounter, user.getId(), 0);// todo default amount
+        Account account = new Account(idCounter, user.getId(), defaultAccountAmount);
         accountrMap.put(account.getId(), account);
         return account;
     }
@@ -77,5 +83,27 @@ public class AccountService {
 
         accountrMap.remove(accountId);
         return accountToRemove;
+    }
+
+    public void transfer(int fromAccountId, int toAccountId, int amountToTransfer) {
+        var accountFrom = findAccountById(fromAccountId)
+                .orElseThrow(() -> new IllegalArgumentException("No such account: id=%s".formatted(fromAccountId)));
+        var accountTo = findAccountById(toAccountId)
+                .orElseThrow(() -> new IllegalArgumentException("No such account: id=%s".formatted(toAccountId)));
+        if (amountToTransfer <= 0) {
+            throw new IllegalArgumentException("Cannot withdraw not positive amount: amount=%s"
+                    .formatted(amountToTransfer));
+        }
+        if (accountFrom.getMoneyAmount() < amountToTransfer) {
+            throw new IllegalArgumentException("Cannot withdraw from account: id=%s, moneyAmount=%s, attemptedWithdraw=%s"
+                    .formatted(accountFrom, accountFrom.getMoneyAmount(), amountToTransfer)
+            );
+        }
+
+        int totalAmountToDeposit = accountTo.getUserId() != accountFrom.getId()
+                ? (int) (amountToTransfer - amountToTransfer * transferCommission)
+                : amountToTransfer;
+        accountFrom.setMoneyAmount(accountFrom.getMoneyAmount() - amountToTransfer);
+        accountTo.setMoneyAmount(accountTo.getMoneyAmount() + totalAmountToDeposit);
     }
 }
