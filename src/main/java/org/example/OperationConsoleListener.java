@@ -2,28 +2,39 @@ package org.example;
 
 import org.example.operations.ConsoleOperationType;
 import org.example.operations.OperationCommandProcessor;
+import org.springframework.stereotype.Component;
 
 import java.sql.SQLOutput;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+@Component
 public class OperationConsoleListener {
     private final Scanner scanner;
     private final Map<ConsoleOperationType, OperationCommandProcessor> processorMap;
 
     public OperationConsoleListener(
             Scanner scanner,
-            Map<ConsoleOperationType, OperationCommandProcessor> processorMap
+            List<OperationCommandProcessor> processorList
     ) {
         this.scanner = scanner;
-        this.processorMap = processorMap;
+        this.processorMap = processorList
+                        .stream()
+                        .collect(
+                                Collectors.toMap(OperationCommandProcessor::getOperationType, items -> items)
+                        )
+                ;;
     }
 
     public void listenUpdates (){
         printAllAvailableOperations();
-        while(true){
+        while(!Thread.currentThread().isInterrupted()){
                 var operationType = listenNextOperation();
+                if (operationType != null) {
+                    return;
+                }
                 processNextOperation(operationType);
 
         }
@@ -47,7 +58,7 @@ public class OperationConsoleListener {
         System.out.println("\nPlease type next operations:");
         printAllAvailableOperations();
         System.out.println();
-        while(true){
+        while(!Thread.currentThread().isInterrupted()){
             var nextOperation = scanner.nextLine();
             try{
                 return ConsoleOperationType.valueOf(nextOperation);
@@ -56,6 +67,7 @@ public class OperationConsoleListener {
             }
 
         }
+        return null;
     }
 
     private void processNextOperation(ConsoleOperationType operation){

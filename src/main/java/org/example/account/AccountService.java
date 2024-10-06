@@ -1,29 +1,29 @@
 package org.example.account;
 
 import org.example.user.User;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+@Service
 public class AccountService {
 
     private final Map<Integer, Account> accountrMap;
 
     private int idCounter;
 
-    private final int defaultAccountAmount;
-    private final double transferCommission;
+    private final AccountProperties accountProperties;
 
-    public AccountService(int defaultAccountAmount, double transferCommission) {
-        this.defaultAccountAmount = defaultAccountAmount;
-        this.transferCommission = transferCommission;
+    public AccountService(AccountProperties accountProperties) {
         this.accountrMap = new HashMap<>();
         this.idCounter = 0;
+        this.accountProperties = accountProperties;
 
     }
 
     public Account createAccount(User user) {
         idCounter++;
-        Account account = new Account(idCounter, user.getId(), defaultAccountAmount);
+        Account account = new Account(idCounter, user.getId(), accountProperties.getDefaultAccountAmount());
         accountrMap.put(account.getId(), account);
         return account;
     }
@@ -101,7 +101,7 @@ public class AccountService {
         }
 
         int totalAmountToDeposit = accountTo.getUserId() != accountFrom.getId()
-                ? (int) (amountToTransfer - amountToTransfer * transferCommission)
+                ? (int) (amountToTransfer - amountToTransfer * accountProperties.getTransferCommission())
                 : amountToTransfer;
         accountFrom.setMoneyAmount(accountFrom.getMoneyAmount() - amountToTransfer);
         accountTo.setMoneyAmount(accountTo.getMoneyAmount() + totalAmountToDeposit);

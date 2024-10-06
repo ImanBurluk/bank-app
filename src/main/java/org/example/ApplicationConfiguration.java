@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.account.AccountProperties;
 import org.example.account.AccountService;
 import org.example.operations.ConsoleOperationType;
 import org.example.operations.OperationCommandProcessor;
@@ -23,44 +24,7 @@ import java.util.stream.Collectors;
 public class ApplicationConfiguration {
     @Bean
     public Scanner scanner(){
+
         return new Scanner(System.in);
-    }
-
-    @Bean
-    public OperationConsoleListener operationConsoleListener(
-            Scanner scanner,
-            List<OperationCommandProcessor> commandProcessorList
-    ){
-        Map<ConsoleOperationType, OperationCommandProcessor> map =
-                commandProcessorList
-                        .stream()
-                        .collect(
-                                Collectors.toMap(OperationCommandProcessor::getOperationType, items -> items)
-                        )
-                ;
-        return new OperationConsoleListener(scanner, map);
-    }
-
-    @Bean
-    public UserService userService(
-            AccountService accountService
-    ){
-        return new UserService(accountService);
-    }
-
-    @Bean
-    public AccountService accountService(
-            @Value("${account.default-amount}") int defaultAmount,
-            @Value("${account.transfer-commission}") double transferCommission
-    ){
-        return new AccountService(defaultAmount, transferCommission);
-    }
-
-    @Bean
-    public AccountTransferProcessor accountTransferProcessor(
-            Scanner scanner,
-            AccountService accountService
-    ){
-        return new AccountTransferProcessor(scanner, accountService);
     }
 }

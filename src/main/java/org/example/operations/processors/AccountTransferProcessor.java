@@ -3,16 +3,19 @@ package org.example.operations.processors;
 import org.example.account.AccountService;
 import org.example.operations.ConsoleOperationType;
 import org.example.operations.OperationCommandProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Scanner;
 
+@Component
 public class AccountTransferProcessor implements OperationCommandProcessor {
 
     private final Scanner scanner;
 
     private final AccountService accountService;
 
-    public AccountTransferProcessor(Scanner scanner, AccountService accountService) {
+    public AccountTransferProcessor (Scanner scanner, AccountService accountService) {
         this.scanner = scanner;
         this.accountService = accountService;
     }

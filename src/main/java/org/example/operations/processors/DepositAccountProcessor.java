@@ -4,10 +4,12 @@ import org.example.account.Account;
 import org.example.account.AccountService;
 import org.example.operations.ConsoleOperationType;
 import org.example.operations.OperationCommandProcessor;
+import org.springframework.stereotype.Component;
 
 import java.sql.SQLOutput;
 import java.util.Scanner;
 
+@Component
 public class DepositAccountProcessor implements OperationCommandProcessor {
 
     private final Scanner scanner;
